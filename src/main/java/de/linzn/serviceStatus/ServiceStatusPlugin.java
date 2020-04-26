@@ -13,6 +13,7 @@ package de.linzn.serviceStatus;
 
 
 import de.linzn.serviceStatus.callbacks.PlexServerStatus;
+import de.linzn.serviceStatus.callbacks.ProxmoxStatus;
 import de.stem.stemSystem.STEMSystemApp;
 import de.stem.stemSystem.modules.pluginModule.STEMPlugin;
 
@@ -21,12 +22,15 @@ public class ServiceStatusPlugin extends STEMPlugin {
     public static ServiceStatusPlugin serviceStatusPlugin;
 
     private PlexServerStatus plexServerStatus;
+    private ProxmoxStatus proxmoxStatus;
 
     @Override
     public void onEnable() {
         serviceStatusPlugin = this;
         plexServerStatus = new PlexServerStatus();
+        proxmoxStatus = new ProxmoxStatus();
         STEMSystemApp.getInstance().getCallBackService().registerCallbackListener(plexServerStatus, this);
+        STEMSystemApp.getInstance().getCallBackService().registerCallbackListener(proxmoxStatus, this);
     }
 
     @Override

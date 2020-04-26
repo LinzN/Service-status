@@ -31,7 +31,7 @@ public class ProxmoxStatus extends AbstractCallback {
     private FileConfiguration fileConfiguration;
 
     public ProxmoxStatus() {
-        fileConfiguration = YamlConfiguration.loadConfiguration(new File(ServiceStatusPlugin.serviceStatusPlugin.getDataFolder(), "plexServer.yml"));
+        fileConfiguration = YamlConfiguration.loadConfiguration(new File(ServiceStatusPlugin.serviceStatusPlugin.getDataFolder(), "proxmoxServer.yml"));
         fileConfiguration.get("hostname", "10.10.10.10");
         fileConfiguration.get("port", 32400);
         fileConfiguration.save();

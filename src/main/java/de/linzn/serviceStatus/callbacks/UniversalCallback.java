@@ -11,7 +11,6 @@
 
 package de.linzn.serviceStatus.callbacks;
 
-
 import de.linzn.serviceStatus.ServiceStatusPlugin;
 import de.linzn.serviceStatus.WebStatusOperation;
 import de.linzn.simplyConfiguration.FileConfiguration;
@@ -25,20 +24,20 @@ import de.stem.stemSystem.utils.Color;
 import java.io.File;
 import java.util.concurrent.TimeUnit;
 
-public class SolarStatus extends AbstractCallback {
+public class UniversalCallback extends AbstractCallback {
 
-    private static boolean solarStatus = false;
     private final FileConfiguration fileConfiguration;
 
-    public SolarStatus() {
-        fileConfiguration = YamlConfiguration.loadConfiguration(new File(ServiceStatusPlugin.serviceStatusPlugin.getDataFolder(), "solarBerry.yml"));
-        fileConfiguration.get("hostname", "10.10.10.10");
-        fileConfiguration.get("port", 32400);
-        fileConfiguration.save();
-    }
+    private final String serviceID;
 
-    public static boolean getSolarStatus() {
-        return solarStatus;
+    private boolean status;
+
+    public UniversalCallback(String serviceID) {
+        this.serviceID = serviceID;
+        this.fileConfiguration = YamlConfiguration.loadConfiguration(new File(ServiceStatusPlugin.serviceStatusPlugin.getDataFolder(), serviceID + ".yml"));
+        this.fileConfiguration.get("hostname", "10.10.10.10");
+        this.fileConfiguration.get("port", 1234);
+        this.fileConfiguration.save();
     }
 
     @Override
@@ -54,9 +53,9 @@ public class SolarStatus extends AbstractCallback {
 
     @Override
     public void callback(OperationOutput operationOutput) {
-        solarStatus = (boolean) operationOutput.getData();
+        status = (boolean) operationOutput.getData();
         WebStatusOperation webStatusOperation = (WebStatusOperation) operationOutput.getAbstractOperation();
-        AppLogger.debug("SOLARBERRY " + webStatusOperation.getStatusHost() + ":" + webStatusOperation.getStatusPort() + " status " + (solarStatus ? Color.GREEN + "ONLINE" : Color.RED + "OFFLINE"));
+        AppLogger.debug(serviceID + " " + webStatusOperation.getStatusHost() + ":" + webStatusOperation.getStatusPort() + " status " + (status ? Color.GREEN + "ONLINE" : Color.RED + "OFFLINE"));
     }
 
     @Override
@@ -64,4 +63,11 @@ public class SolarStatus extends AbstractCallback {
         return new CallbackTime(1, 1, TimeUnit.MINUTES);
     }
 
+    public boolean getStatus() {
+        return this.status;
+    }
+
+    public String getServiceID() {
+        return serviceID;
+    }
 }

@@ -12,33 +12,54 @@
 package de.linzn.serviceStatus;
 
 
-import de.linzn.serviceStatus.callbacks.PlexServerStatus;
-import de.linzn.serviceStatus.callbacks.ProxmoxStatus;
-import de.linzn.serviceStatus.callbacks.SolarStatus;
+import de.linzn.serviceStatus.callbacks.UniversalCallback;
 import de.stem.stemSystem.STEMSystemApp;
 import de.stem.stemSystem.modules.pluginModule.STEMPlugin;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class ServiceStatusPlugin extends STEMPlugin {
 
     public static ServiceStatusPlugin serviceStatusPlugin;
 
-    private PlexServerStatus plexServerStatus;
-    private ProxmoxStatus proxmoxStatus;
-    private SolarStatus solarStatus;
+    private HashMap<String, UniversalCallback> list;
 
     @Override
     public void onEnable() {
         serviceStatusPlugin = this;
-        plexServerStatus = new PlexServerStatus();
-        proxmoxStatus = new ProxmoxStatus();
-        solarStatus = new SolarStatus();
-        STEMSystemApp.getInstance().getCallBackService().registerCallbackListener(plexServerStatus, this);
-        STEMSystemApp.getInstance().getCallBackService().registerCallbackListener(proxmoxStatus, this);
-        STEMSystemApp.getInstance().getCallBackService().registerCallbackListener(solarStatus, this);
+        this.list = new HashMap<>();
+        readServices();
     }
 
     @Override
     public void onDisable() {
         STEMSystemApp.getInstance().getCallBackService().unregisterCallbackListeners(this);
+        this.list.clear();
+    }
+
+    public boolean getServiceStatus(String serviceID) {
+        if (this.list.containsKey(serviceID.toLowerCase())) {
+            return this.list.get(serviceID.toLowerCase()).getStatus();
+        }
+        STEMSystemApp.LOGGER.ERROR("No service status available for " + serviceID);
+        return false;
+    }
+
+    private void readServices() {
+        if (!this.getDefaultConfig().contains("services") || this.getDefaultConfig().getStringList("services").isEmpty()) {
+            List<String> list = new ArrayList<>();
+            list.add("TEST");
+            this.getDefaultConfig().get("services", list);
+            this.getDefaultConfig().save();
+        }
+
+        for (String serviceID : this.getDefaultConfig().getStringList("services")) {
+            UniversalCallback universalCallback = new UniversalCallback(serviceID.toLowerCase());
+            STEMSystemApp.getInstance().getCallBackService().registerCallbackListener(universalCallback, this);
+            this.list.put(serviceID.toLowerCase(), universalCallback);
+            STEMSystemApp.LOGGER.INFO("Register new service status " + serviceID);
+        }
     }
 }

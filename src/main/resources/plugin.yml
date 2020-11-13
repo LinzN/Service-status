@@ -1,4 +1,4 @@
 main: de.linzn.serviceStatus.ServiceStatusPlugin
 name: service-status
 version: ${project.version}
-depend: []
+depend: [ restful-api ]

@@ -12,13 +12,16 @@
 package de.linzn.serviceStatus;
 
 
+import de.linzn.restfulapi.RestFulApiPlugin;
 import de.linzn.serviceStatus.callbacks.UniversalCallback;
+import de.linzn.serviceStatus.restfulapi.GET_Service;
 import de.stem.stemSystem.STEMSystemApp;
 import de.stem.stemSystem.modules.pluginModule.STEMPlugin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ServiceStatusPlugin extends STEMPlugin {
 
@@ -31,6 +34,7 @@ public class ServiceStatusPlugin extends STEMPlugin {
         serviceStatusPlugin = this;
         this.list = new HashMap<>();
         readServices();
+        RestFulApiPlugin.restFulApiPlugin.registerIGetJSONClass(new GET_Service(this));
     }
 
     @Override
@@ -45,6 +49,14 @@ public class ServiceStatusPlugin extends STEMPlugin {
         }
         STEMSystemApp.LOGGER.ERROR("No service status available for " + serviceID);
         return false;
+    }
+
+    public Map<String, Boolean> getServices() {
+        Map<String, Boolean> services = new HashMap<>();
+        for (String service : this.list.keySet()) {
+            services.put(this.list.get(service).getServiceID(), this.list.get(service).getStatus());
+        }
+        return services;
     }
 
     private void readServices() {

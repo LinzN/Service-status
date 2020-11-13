@@ -27,11 +27,15 @@ public class GET_Service implements IGetJSON {
 
     @Override
     public Object getRequestData(List<String> inputList) {
-        String serviceID = inputList.get(1);
-        boolean status = serviceStatusPlugin.getServiceStatus(serviceID);
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("status", status);
-        return jsonObject;
+        if (inputList.size() > 1) {
+            String serviceID = inputList.get(1);
+            boolean status = serviceStatusPlugin.getServiceStatus(serviceID);
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("status", status);
+            return jsonObject;
+        } else {
+            return getGenericData();
+        }
     }
 
     @Override

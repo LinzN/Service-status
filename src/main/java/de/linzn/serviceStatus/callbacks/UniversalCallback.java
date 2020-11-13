@@ -15,7 +15,7 @@ import de.linzn.serviceStatus.ServiceStatusPlugin;
 import de.linzn.serviceStatus.WebStatusOperation;
 import de.linzn.simplyConfiguration.FileConfiguration;
 import de.linzn.simplyConfiguration.provider.YamlConfiguration;
-import de.stem.stemSystem.AppLogger;
+import de.stem.stemSystem.STEMSystemApp;
 import de.stem.stemSystem.taskManagment.AbstractCallback;
 import de.stem.stemSystem.taskManagment.CallbackTime;
 import de.stem.stemSystem.taskManagment.operations.OperationOutput;
@@ -55,7 +55,7 @@ public class UniversalCallback extends AbstractCallback {
     public void callback(OperationOutput operationOutput) {
         status = (boolean) operationOutput.getData();
         WebStatusOperation webStatusOperation = (WebStatusOperation) operationOutput.getAbstractOperation();
-        AppLogger.debug(serviceID + " " + webStatusOperation.getStatusHost() + ":" + webStatusOperation.getStatusPort() + " status " + (status ? Color.GREEN + "ONLINE" : Color.RED + "OFFLINE"));
+        STEMSystemApp.LOGGER.DEBUG(serviceID + " " + webStatusOperation.getStatusHost() + ":" + webStatusOperation.getStatusPort() + " status " + (status ? Color.GREEN + "ONLINE" : Color.RED + "OFFLINE"));
     }
 
     @Override

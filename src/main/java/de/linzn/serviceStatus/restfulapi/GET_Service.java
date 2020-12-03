@@ -11,14 +11,14 @@
 
 package de.linzn.serviceStatus.restfulapi;
 
-import de.linzn.restfulapi.api.jsonapi.get.IGetJSON;
+import de.linzn.restfulapi.api.jsonapi.IRequest;
+import de.linzn.restfulapi.api.jsonapi.RequestData;
 import de.linzn.serviceStatus.ServiceStatusPlugin;
 import org.json.JSONObject;
 
-import java.util.List;
 import java.util.Map;
 
-public class GET_Service implements IGetJSON {
+public class GET_Service implements IRequest {
     private final ServiceStatusPlugin serviceStatusPlugin;
 
     public GET_Service(ServiceStatusPlugin serviceStatusPlugin) {
@@ -26,20 +26,20 @@ public class GET_Service implements IGetJSON {
     }
 
     @Override
-    public Object getRequestData(List<String> inputList) {
-        if (inputList.size() > 1) {
-            String serviceID = inputList.get(1);
+    public Object proceedRequestData(RequestData requestData) {
+        if (requestData.getSubChannels().size() > 0) {
+            String serviceID = requestData.getSubChannels().get(0);
             boolean status = serviceStatusPlugin.getServiceStatus(serviceID);
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("status", status);
             return jsonObject;
         } else {
-            return getGenericData();
+            return genericData();
         }
     }
 
     @Override
-    public Object getGenericData() {
+    public Object genericData() {
         JSONObject jsonObject = new JSONObject();
         Map<String, Boolean> services = serviceStatusPlugin.getServices();
         for (String serviceID : services.keySet()) {

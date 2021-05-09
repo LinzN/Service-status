@@ -19,7 +19,6 @@ import de.stem.stemSystem.STEMSystemApp;
 import de.stem.stemSystem.taskManagment.AbstractCallback;
 import de.stem.stemSystem.taskManagment.CallbackTime;
 import de.stem.stemSystem.taskManagment.operations.OperationOutput;
-import de.stem.stemSystem.utils.Color;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -55,7 +54,7 @@ public class UniversalCallback extends AbstractCallback {
     public void callback(OperationOutput operationOutput) {
         status = (boolean) operationOutput.getData();
         WebStatusOperation webStatusOperation = (WebStatusOperation) operationOutput.getAbstractOperation();
-        STEMSystemApp.LOGGER.DEBUG(serviceID + " " + webStatusOperation.getStatusHost() + ":" + webStatusOperation.getStatusPort() + " status " + (status ? Color.GREEN + "ONLINE" : Color.RED + "OFFLINE"));
+        STEMSystemApp.LOGGER.DEBUG(serviceID + " " + webStatusOperation.getStatusHost() + ":" + webStatusOperation.getStatusPort() + " status " + (status ? "ONLINE" : "OFFLINE"));
     }
 
     @Override
